@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using DiscordRPC;
 
 namespace MusicBeePlugin
 {
@@ -10,6 +11,7 @@ namespace MusicBeePlugin
     {
         private MusicBeeApiInterface mbApiInterface;
         private PluginInfo about = new PluginInfo();
+        private static DiscordRpcClient client = new DiscordRpcClient("771555853513129984");
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
@@ -21,9 +23,9 @@ namespace MusicBeePlugin
             about.Author = "kamoshi";
             about.TargetApplication = "MusicBee";   //  the name of a Plugin Storage device or panel header for a dockable panel
             about.Type = PluginType.General;
-            about.VersionMajor = 0;  // your plugin version
+            about.VersionMajor = 1;  // your plugin version
             about.VersionMinor = 0;
-            about.Revision = 1;
+            about.Revision = 0;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.PlayerEvents | ReceiveNotificationFlags.TagEvents);
@@ -78,6 +80,22 @@ namespace MusicBeePlugin
             switch (type)
             {
                 case NotificationType.PluginStartup:
+                    client.Initialize();
+                    break;
+                case NotificationType.PlayStateChanged:
+                    string album = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Album);
+                    string artist = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist);
+                    client.SetPresence(new RichPresence()
+                    {
+                        Details = album,
+                        State = artist,
+                        Assets = new Assets()
+                        {
+                            LargeImageKey = "jammin",
+                            LargeImageText = "Lachee's Discord IPC Library",
+                            SmallImageKey = "image_small"
+                        }
+                    });
                     // perform startup initialisation
                     switch (mbApiInterface.Player_GetPlayState())
                     {
@@ -86,10 +104,6 @@ namespace MusicBeePlugin
                             // ...
                             break;
                     }
-                    break;
-                case NotificationType.TrackChanged:
-                    string artist = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist);
-                    // ...
                     break;
             }
         }
