@@ -16,12 +16,12 @@ namespace MusicBeePlugin
             mbApiInterface = new MusicBeeApiInterface();
             mbApiInterface.Initialise(apiInterfacePtr);
             about.PluginInfoVersion = PluginInfoVersion;
-            about.Name = "Plugin Name";
-            about.Description = "A brief description of what this plugin does";
-            about.Author = "Author";
-            about.TargetApplication = "";   //  the name of a Plugin Storage device or panel header for a dockable panel
+            about.Name = "KamDiscordBee";
+            about.Description = "Plugin provides rich presence for MusicBee";
+            about.Author = "kamoshi";
+            about.TargetApplication = "MusicBee";   //  the name of a Plugin Storage device or panel header for a dockable panel
             about.Type = PluginType.General;
-            about.VersionMajor = 1;  // your plugin version
+            about.VersionMajor = 0;  // your plugin version
             about.VersionMinor = 0;
             about.Revision = 1;
             about.MinInterfaceVersion = MinInterfaceVersion;
