@@ -11,7 +11,10 @@ namespace MusicBeePlugin
     {
         private MusicBeeApiInterface mbApiInterface;
         private PluginInfo about = new PluginInfo();
-        private static DiscordRpcClient client = new DiscordRpcClient("771555853513129984");
+
+        // Additional fields
+        private static DiscordRpcClient discordRpcClient;
+        private static Dictionary<string, Func<string>> metaDataDelegates;
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
@@ -30,6 +33,10 @@ namespace MusicBeePlugin
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.PlayerEvents | ReceiveNotificationFlags.TagEvents);
             about.ConfigurationPanelHeight = 0;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
+            
+            discordRpcClient = new DiscordRpcClient("771555853513129984");
+            discordRpcClient.Initialize();
+            metaDataDelegates = GetMetaDataDict();
             return about;
         }
 
@@ -76,25 +83,26 @@ namespace MusicBeePlugin
         // you need to set about.ReceiveNotificationFlags = PlayerEvents to receive all notifications, and not just the startup event
         public void ReceiveNotification(string sourceFileUrl, NotificationType type)
         {
+            Dictionary<string, Func<string>> metaDataDelegates = GetMetaDataDict();
+            Func<string> deleg = metaDataDelegates["Album"];
+            var test = deleg();
             switch (type)
             {
                 case NotificationType.PluginStartup:
-                    if (!client.IsInitialized) client.Initialize();
-                    break;
                 case NotificationType.PlayStateChanged:
-                    string album = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Album);
-                    string artist = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Artist);
-                    string albumArtist = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.AlbumArtist);
-                    string songTitle = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.TrackTitle);
-                    string code = mbApiInterface.NowPlaying_GetFileTag(MetaDataType.Custom1);
-                    
+                    string album = metaDataDelegates["Album"]();
+                    string artist = metaDataDelegates["Artist"]();
+                    string albumArtist = metaDataDelegates["AlbumArtist"]();
+                    string songTitle = metaDataDelegates["TrackTitle"]();
+                    string code = metaDataDelegates["Custom1"]();
+
                     // perform startup initialisation
                     switch (mbApiInterface.Player_GetPlayState())
                     {
                         case PlayState.Playing:
                         case PlayState.Paused:
                         case PlayState.Stopped:
-                            updatePresenceState("ardw0003", "Top line", "Bottom line", "Description");
+                            updatePresenceState("ardw0003", $"{album}", $"{songTitle} by {artist}", "Description");
                             break;
                     }
                     break;
@@ -105,7 +113,7 @@ namespace MusicBeePlugin
         private void updatePresenceState(string albumCover, string topLine, string bottomLine, string description)
         {
             albumCover = albumCover != "" ? albumCover : "jammin"; // in case it's empty
-            client.SetPresence(new RichPresence()
+            discordRpcClient.SetPresence(new RichPresence()
             {
                 Details = topLine,
                 State = bottomLine,
@@ -117,5 +125,17 @@ namespace MusicBeePlugin
                 }
             });
         }
+
+        private Dictionary<string, Func<string>> GetMetaDataDict()
+        {
+            var dictionary = new Dictionary<string, Func<string>>();
+            foreach (MetaDataType enumVal in Enum.GetValues(typeof(MetaDataType)))
+            {
+                string enumName = Enum.GetName(typeof(MetaDataType), enumVal);
+                dictionary[enumName] = () => mbApiInterface.NowPlaying_GetFileTag(enumVal);
+            }
+            return dictionary;
+        }
+        
     }
 }
