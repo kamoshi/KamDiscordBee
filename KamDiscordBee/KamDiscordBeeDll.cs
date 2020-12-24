@@ -32,7 +32,7 @@ namespace MusicBeePlugin
             about.Revision = 0;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
-            about.ReceiveNotifications = (ReceiveNotificationFlags.PlayerEvents | ReceiveNotificationFlags.TagEvents);
+            about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents;
             about.ConfigurationPanelHeight = 0;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
             
             discordRpcClient = new DiscordRpcClient("771555853513129984");
@@ -80,14 +80,13 @@ namespace MusicBeePlugin
         {
         }
 
-        // receive event notifications from MusicBee
-        // you need to set about.ReceiveNotificationFlags = PlayerEvents to receive all notifications, and not just the startup event
         public void ReceiveNotification(string sourceFileUrl, NotificationType type)
         {
             switch (type)
             {
                 case NotificationType.PluginStartup:
                 case NotificationType.PlayStateChanged:
+                case NotificationType.TrackChanged:
                     // perform startup initialisation
                     switch (mbApiInterface.Player_GetPlayState())
                     {
