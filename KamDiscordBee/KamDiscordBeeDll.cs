@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using DiscordRPC;
+using System.Text;
 
 namespace MusicBeePlugin
 {
@@ -83,26 +84,17 @@ namespace MusicBeePlugin
         // you need to set about.ReceiveNotificationFlags = PlayerEvents to receive all notifications, and not just the startup event
         public void ReceiveNotification(string sourceFileUrl, NotificationType type)
         {
-            Dictionary<string, Func<string>> metaDataDelegates = GetMetaDataDict();
-            Func<string> deleg = metaDataDelegates["Album"];
-            var test = deleg();
             switch (type)
             {
                 case NotificationType.PluginStartup:
                 case NotificationType.PlayStateChanged:
-                    string album = metaDataDelegates["Album"]();
-                    string artist = metaDataDelegates["Artist"]();
-                    string albumArtist = metaDataDelegates["AlbumArtist"]();
-                    string songTitle = metaDataDelegates["TrackTitle"]();
-                    string code = metaDataDelegates["Custom1"]();
-
                     // perform startup initialisation
                     switch (mbApiInterface.Player_GetPlayState())
                     {
                         case PlayState.Playing:
                         case PlayState.Paused:
                         case PlayState.Stopped:
-                            updatePresenceState("ardw0003", $"{album}", $"{songTitle} by {artist}", "Description");
+                            UpdatePresenceState("ardw0003", ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description");
                             break;
                     }
                     break;
@@ -110,9 +102,9 @@ namespace MusicBeePlugin
         }
 
         // Provided data should be preformatted with the correct value.
-        private void updatePresenceState(string albumCover, string topLine, string bottomLine, string description)
+        private void UpdatePresenceState(string albumCover, string topLine, string bottomLine, string description)
         {
-            albumCover = albumCover != "" ? albumCover : "jammin"; // in case it's empty
+            albumCover = albumCover != "" ? albumCover : "default_img"; // in case it's empty
             discordRpcClient.SetPresence(new RichPresence()
             {
                 Details = topLine,
@@ -124,6 +116,40 @@ namespace MusicBeePlugin
                     SmallImageKey = "image_small"
                 }
             });
+        }
+
+        private string ReplaceTags(string taggedString)
+        {
+            var stringBuffer = new StringBuilder();
+            var tagBuffer = new StringBuilder();
+            bool tag = false;
+            for (int i = 0; i < taggedString.Length; i++)
+            {
+                if (tag)
+                {
+                    if (taggedString[i] == ']')
+                    {
+                        string tagString = tagBuffer.ToString();
+                        if (metaDataDelegates.ContainsKey(tagString))
+                        {
+                            tagString = metaDataDelegates[tagString]();
+                            stringBuffer.Append(tagString);
+                        }
+                        else stringBuffer.Append($"[{tagBuffer}]");
+                        // cleanup
+                        tagBuffer.Clear();
+                        tag = false;
+                    }
+                    else tagBuffer.Append(taggedString[i]);
+                }
+                else
+                {
+                    if (taggedString[i] == '[') tag = true;
+                    else stringBuffer.Append(taggedString[i]);
+                }
+            }
+            if (tagBuffer.Length > 0) stringBuffer.Append(tagBuffer); // whatever is left in tagBuffer needs to go back
+            return stringBuffer.ToString();
         }
 
         private Dictionary<string, Func<string>> GetMetaDataDict()
