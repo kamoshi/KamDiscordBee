@@ -14,8 +14,9 @@ namespace MusicBeePlugin
         private PluginInfo about = new PluginInfo();
 
         // Additional fields
-        private static DiscordRpcClient discordRpcClient;
-        private static Dictionary<string, Func<string>> metaDataDelegates;
+        private DiscordRpcClient discordRpcClient;
+        private Dictionary<string, Func<string>> metaDataDelegates;
+        private RichPresence presence;
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
@@ -35,9 +36,17 @@ namespace MusicBeePlugin
             about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents;
             about.ConfigurationPanelHeight = 0;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
             
+            // Discord RPC
             discordRpcClient = new DiscordRpcClient("771555853513129984");
+            presence = new RichPresence() {
+                Assets = new Assets() {
+                    LargeImageKey = "default",
+                    LargeImageText = $"MusicBee {mbApiInterface.MusicBeeVersion}",
+                    SmallImageKey = "stopped"
+                }
+            };
             discordRpcClient.Initialize();
-            metaDataDelegates = GetMetaDataDict();
+            metaDataDelegates = GetMetaDataDelegates();
             return about;
         }
 
@@ -87,34 +96,35 @@ namespace MusicBeePlugin
                 case NotificationType.PluginStartup:
                 case NotificationType.PlayStateChanged:
                 case NotificationType.TrackChanged:
-                    // perform startup initialisation
                     switch (mbApiInterface.Player_GetPlayState())
                     {
                         case PlayState.Playing:
+                            presence.Assets.SmallImageKey = "playing";
+                            presence.Assets.SmallImageText = "playing";
+                            break;
                         case PlayState.Paused:
+                            presence.Assets.SmallImageKey = "paused";
+                            presence.Assets.SmallImageText = "paused";
+                            break;
                         case PlayState.Stopped:
-                            UpdatePresenceState("ardw0003", ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description");
+                            presence.Assets.SmallImageKey = "stopped";
+                            presence.Assets.SmallImageText = "stopped";
                             break;
                     }
+                    UpdatePresenceState(ReplaceTags("[Custom1]"), ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description", null);
                     break;
             }
         }
 
         // Provided data should be preformatted with the correct value.
-        private void UpdatePresenceState(string albumCover, string topLine, string bottomLine, string description)
+        private void UpdatePresenceState(string albumCover, string topLine, string bottomLine, string description, DateTime? startTime)
         {
-            albumCover = albumCover != "" ? albumCover : "default_img"; // in case it's empty
-            discordRpcClient.SetPresence(new RichPresence()
-            {
-                Details = topLine,
-                State = bottomLine,
-                Assets = new Assets()
-                {
-                    LargeImageKey = albumCover.ToLowerInvariant(),
-                    LargeImageText = description,
-                    SmallImageKey = "image_small"
-                }
-            });
+            albumCover = albumCover != "" ? albumCover : "default"; // in case it's empty
+            presence.Details = topLine;
+            presence.State = bottomLine;
+            presence.Assets.LargeImageKey = albumCover.ToLowerInvariant();
+            presence.Assets.LargeImageText = description;
+            discordRpcClient.SetPresence(presence);
         }
 
         private string ReplaceTags(string taggedString)
@@ -134,7 +144,7 @@ namespace MusicBeePlugin
                             tagString = metaDataDelegates[tagString]();
                             stringBuffer.Append(tagString);
                         }
-                        else stringBuffer.Append($"[{tagBuffer}]");
+                        else stringBuffer.Append($"[{tagString}]");
                         // cleanup
                         tagBuffer.Clear();
                         tag = false;
@@ -151,7 +161,7 @@ namespace MusicBeePlugin
             return stringBuffer.ToString();
         }
 
-        private Dictionary<string, Func<string>> GetMetaDataDict()
+        private Dictionary<string, Func<string>> GetMetaDataDelegates()
         {
             var dictionary = new Dictionary<string, Func<string>>();
             foreach (MetaDataType enumVal in Enum.GetValues(typeof(MetaDataType)))
