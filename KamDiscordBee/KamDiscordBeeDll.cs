@@ -99,25 +99,22 @@ namespace MusicBeePlugin
                     switch (mbApiInterface.Player_GetPlayState())
                     {
                         case PlayState.Playing:
-                            presence.Assets.SmallImageKey = "playing";
-                            presence.Assets.SmallImageText = "playing";
+                            UpdatePresencePlayState("playing", true, false);
                             break;
                         case PlayState.Paused:
-                            presence.Assets.SmallImageKey = "paused";
-                            presence.Assets.SmallImageText = "paused";
+                            UpdatePresencePlayState("paused", false, false);
                             break;
                         case PlayState.Stopped:
-                            presence.Assets.SmallImageKey = "stopped";
-                            presence.Assets.SmallImageText = "stopped";
+                            UpdatePresencePlayState("stopped", false, false);
                             break;
                     }
-                    UpdatePresenceState(ReplaceTags("[Custom1]"), ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description", null);
+                    UpdatePresenceInfoState(ReplaceTags("[Custom1]"), ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description", null);
                     break;
             }
         }
 
         // Provided data should be preformatted with the correct value.
-        private void UpdatePresenceState(string albumCover, string topLine, string bottomLine, string description, DateTime? startTime)
+        private void UpdatePresenceInfoState(string albumCover, string topLine, string bottomLine, string description, DateTime? startTime)
         {
             albumCover = albumCover != "" ? albumCover : "default"; // in case it's empty
             presence.Details = topLine;
@@ -125,6 +122,29 @@ namespace MusicBeePlugin
             presence.Assets.LargeImageKey = albumCover.ToLowerInvariant();
             presence.Assets.LargeImageText = description;
             discordRpcClient.SetPresence(presence);
+        }
+
+        private void UpdatePresencePlayState(string smallImageKey, bool displayTime, bool showRemaining)
+        {
+            presence.Assets.SmallImageKey = smallImageKey;
+            presence.Assets.SmallImageText = smallImageKey;
+            if (displayTime)
+            {
+                presence.Timestamps = new Timestamps();
+                int playerPositionMillis = mbApiInterface.Player_GetPosition();
+                if (showRemaining)
+                {
+                    int songLengthMillis = mbApiInterface.NowPlaying_GetDuration();
+                    presence.Timestamps.Start = DateTime.UtcNow.AddMilliseconds(-playerPositionMillis);
+                    presence.Timestamps.End = DateTime.UtcNow.AddMilliseconds(songLengthMillis - playerPositionMillis);
+                }
+                else
+                {
+                    presence.Timestamps.Start = DateTime.UtcNow.AddMilliseconds(-playerPositionMillis);
+                    presence.Timestamps.End = null;
+                }
+            }
+            else presence.Timestamps = null;
         }
 
         private string ReplaceTags(string taggedString)
