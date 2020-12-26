@@ -108,13 +108,14 @@ namespace MusicBeePlugin
                             UpdatePresencePlayState("stopped", false, false);
                             break;
                     }
-                    UpdatePresenceInfoState(ReplaceTags("[Custom1]"), ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description", null);
+                    UpdatePresenceInfoState(ReplaceTags("[Custom1]"), ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description");
                     break;
             }
         }
 
-        // Provided data should be preformatted with the correct value.
-        private void UpdatePresenceInfoState(string albumCover, string topLine, string bottomLine, string description, DateTime? startTime)
+        // Updates rich presence information
+        // provided data should be preformatted with the metadata values
+        private void UpdatePresenceInfoState(string albumCover, string topLine, string bottomLine, string description)
         {
             albumCover = albumCover != "" ? albumCover : "default"; // in case it's empty
             presence.Details = topLine;
@@ -124,6 +125,7 @@ namespace MusicBeePlugin
             discordRpcClient.SetPresence(presence);
         }
 
+        // Updates player state and time in rich presence
         private void UpdatePresencePlayState(string smallImageKey, bool displayTime, bool showRemaining)
         {
             presence.Assets.SmallImageKey = smallImageKey;
@@ -147,6 +149,7 @@ namespace MusicBeePlugin
             else presence.Timestamps = null;
         }
 
+        // Replaces tags in string with metadata
         private string ReplaceTags(string taggedString)
         {
             var stringBuffer = new StringBuilder();
@@ -181,6 +184,7 @@ namespace MusicBeePlugin
             return stringBuffer.ToString();
         }
 
+        // Provides easy access to MusicBee metadata by enum name
         private Dictionary<string, Func<string>> GetMetaDataDelegates()
         {
             var dictionary = new Dictionary<string, Func<string>>();
