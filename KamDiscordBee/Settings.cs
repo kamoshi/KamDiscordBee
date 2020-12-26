@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using System.IO;
+using System.Xml;
 
 namespace MusicBeePlugin
 {
@@ -25,18 +26,19 @@ namespace MusicBeePlugin
         }
 
 
-
-
-        // Methods
-        public void Save()
-        {
-
-        }
-
         // Saving / Loading
         public void Save(string path)
         {
-
+            {
+                string dir = Path.GetDirectoryName(path);
+                if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            }
+            using (var xmlWriter = XmlWriter.Create(path))
+            {
+                var serializer = new DataContractSerializer(typeof(Settings));
+                serializer.WriteObject(xmlWriter, this);
+                xmlWriter.Flush();
+            }
         }
 
         public static Settings Load(string path)

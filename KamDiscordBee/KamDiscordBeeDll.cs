@@ -13,10 +13,14 @@ namespace MusicBeePlugin
         private MusicBeeApiInterface mbApiInterface;
         private PluginInfo about = new PluginInfo();
 
-        // Additional fields
+        // Discord RPC
         private DiscordRpcClient discordRpcClient;
         private Dictionary<string, Func<string>> metaDataDelegates;
         private RichPresence presence;
+
+        // Settings
+        private string settingsPath;
+        private Settings settings;
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
@@ -47,6 +51,13 @@ namespace MusicBeePlugin
             };
             discordRpcClient.Initialize();
             metaDataDelegates = GetMetaDataDelegates();
+
+            // Settings
+            settingsPath = mbApiInterface.Setting_GetPersistentStoragePath() + about.Name + "\\settings.xml";
+            settings = Settings.Load(settingsPath);
+            //settings.TopLine = "[Album][Album]";
+            //settings.Save(settingsPath);
+
             return about;
         }
 
@@ -75,7 +86,7 @@ namespace MusicBeePlugin
         // its up to you to figure out whether anything has changed and needs updating
         public void SaveSettings()
         {
-            // save any persistent settings in a sub-folder of this path
+            // TODO: save any persistent settings in a sub-folder of this path
             string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
         }
 
@@ -89,6 +100,7 @@ namespace MusicBeePlugin
         // uninstall this plugin - clean up any persisted files
         public void Uninstall()
         {
+            // TODO: Delete settings file here
         }
 
         public void ReceiveNotification(string sourceFileUrl, NotificationType type)
@@ -110,7 +122,11 @@ namespace MusicBeePlugin
                             UpdatePresencePlayState("stopped", false, false);
                             break;
                     }
-                    UpdatePresenceInfoState(ReplaceTags("[Custom1]"), ReplaceTags("[Album]"), ReplaceTags("[TrackTitle] by [Artist]"), "Description");
+                    string imageTag = ReplaceTags("[Custom1]");
+                    string imageDescription = ReplaceTags("[Custom1]");
+                    string topLine = ReplaceTags(settings.TopLine);
+                    string bottomLine = ReplaceTags(settings.BottomLine);
+                    UpdatePresenceInfoState(imageTag, topLine, bottomLine, imageDescription);
                     break;
             }
         }
