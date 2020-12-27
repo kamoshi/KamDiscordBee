@@ -44,7 +44,7 @@ namespace MusicBeePlugin
             discordRpcClient = new DiscordRpcClient("792839742709432411");
             presence = new RichPresence() {
                 Assets = new Assets() {
-                    LargeImageKey = "default",
+                    LargeImageKey = "musicbee",
                     LargeImageText = $"MusicBee {mbApiInterface.MusicBeeVersion}",
                     SmallImageKey = "stopped"
                 }
@@ -61,7 +61,7 @@ namespace MusicBeePlugin
 
         public bool Configure(IntPtr panelHandle)
         {
-            SettingsWindow sw = new SettingsWindow();
+            SettingsWindow sw = new SettingsWindow(this, settings);
             sw.Show();
             return true;
         }
@@ -95,7 +95,7 @@ namespace MusicBeePlugin
                     switch (mbApiInterface.Player_GetPlayState())
                     {
                         case PlayState.Playing:
-                            UpdatePresencePlayState("playing", true, false);
+                            UpdatePresencePlayState("playing", settings.ShowTime, settings.ShowRemainingTime);
                             break;
                         case PlayState.Paused:
                             UpdatePresencePlayState("paused", false, false);
@@ -104,12 +104,12 @@ namespace MusicBeePlugin
                             UpdatePresencePlayState("stopped", false, false);
                             break;
                     }
-                    string imageTag = ReplaceTags("[Custom1]");
-                    string imageDescription = ReplaceTags("[Custom1]");
+                    string imageTag = settings.ImageUseAssetKey ? ReplaceTags(settings.ImageAssetKey) : "musicbee";
+                    string imageDescription = ReplaceTags(settings.ImageDetail);
                     string topLine = ReplaceTags(settings.TopLine);
                     string bottomLine = ReplaceTags(settings.BottomLine);
                     UpdatePresenceInfoState(imageTag, topLine, bottomLine, imageDescription);
-                    UpdatePresenceTrackNumber(true);
+                    UpdatePresenceTrackNumber(settings.ShowTrackNumber);
                     discordRpcClient.SetPresence(presence);
                     break;
             }
@@ -119,7 +119,7 @@ namespace MusicBeePlugin
         // provided data should be preformatted with the metadata values
         private void UpdatePresenceInfoState(string albumCover, string topLine, string bottomLine, string description)
         {
-            albumCover = albumCover != "" ? albumCover : "default"; // in case it's empty
+            albumCover = albumCover != "" ? albumCover : "musicbee"; // in case it's empty
             presence.Details = topLine;
             presence.State = bottomLine;
             presence.Assets.LargeImageKey = albumCover.ToLowerInvariant();
@@ -138,7 +138,7 @@ namespace MusicBeePlugin
                 if (showRemaining)
                 {
                     int songLengthMillis = mbApiInterface.NowPlaying_GetDuration();
-                    presence.Timestamps.Start = DateTime.UtcNow.AddMilliseconds(-playerPositionMillis);
+                    presence.Timestamps.Start = null;
                     presence.Timestamps.End = DateTime.UtcNow.AddMilliseconds(songLengthMillis - playerPositionMillis);
                 }
                 else

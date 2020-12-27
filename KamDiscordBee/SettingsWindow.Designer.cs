@@ -29,106 +29,193 @@ namespace MusicBeePlugin
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox1.SuspendLayout();
+            System.Windows.Forms.GroupBox groupBox2;
+            System.Windows.Forms.Label label1;
+            System.Windows.Forms.GroupBox groupBox1;
+            this.textBoxAssetKey = new System.Windows.Forms.TextBox();
+            this.checkBoxUseCustomAssetKey = new System.Windows.Forms.CheckBox();
+            this.textBoxLargeImageDetail = new System.Windows.Forms.TextBox();
+            this.textBoxTopLine = new System.Windows.Forms.TextBox();
+            this.checkBoxTrackNoCount = new System.Windows.Forms.CheckBox();
+            this.textBoxBottomLine = new System.Windows.Forms.TextBox();
+            this.checkBoxTimeShowRemaining = new System.Windows.Forms.CheckBox();
+            this.checkBoxTimeShow = new System.Windows.Forms.CheckBox();
+            this.saveButton = new System.Windows.Forms.Button();
+            this.cancelButton = new System.Windows.Forms.Button();
+            groupBox2 = new System.Windows.Forms.GroupBox();
+            label1 = new System.Windows.Forms.Label();
+            groupBox1 = new System.Windows.Forms.GroupBox();
+            groupBox2.SuspendLayout();
+            groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(336, 123);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Save";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(255, 123);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(6, 77);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(155, 21);
-            this.checkBox1.TabIndex = 3;
-            this.checkBox1.Text = "Display time playing";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.textBox2);
-            this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Controls.Add(this.checkBox1);
-            this.groupBox1.Location = new System.Drawing.Point(219, 12);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(240, 105);
-            this.groupBox1.TabIndex = 4;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Rich presence lines";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(6, 21);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(228, 22);
-            this.textBox1.TabIndex = 5;
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(6, 49);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(228, 22);
-            this.textBox2.TabIndex = 6;
             // 
             // groupBox2
             // 
-            this.groupBox2.Location = new System.Drawing.Point(12, 10);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(200, 144);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Image";
+            groupBox2.Controls.Add(label1);
+            groupBox2.Controls.Add(this.textBoxAssetKey);
+            groupBox2.Controls.Add(this.checkBoxUseCustomAssetKey);
+            groupBox2.Controls.Add(this.textBoxLargeImageDetail);
+            groupBox2.Location = new System.Drawing.Point(12, 12);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new System.Drawing.Size(268, 107);
+            groupBox2.TabIndex = 5;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Large Image";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new System.Drawing.Point(29, 75);
+            label1.Name = "label1";
+            label1.Size = new System.Drawing.Size(73, 17);
+            label1.TabIndex = 10;
+            label1.Text = "Asset key:";
+            // 
+            // textBoxAssetKey
+            // 
+            this.textBoxAssetKey.Location = new System.Drawing.Point(108, 75);
+            this.textBoxAssetKey.Name = "textBoxAssetKey";
+            this.textBoxAssetKey.Size = new System.Drawing.Size(117, 22);
+            this.textBoxAssetKey.TabIndex = 11;
+            // 
+            // checkBoxUseCustomAssetKey
+            // 
+            this.checkBoxUseCustomAssetKey.AutoSize = true;
+            this.checkBoxUseCustomAssetKey.Location = new System.Drawing.Point(6, 51);
+            this.checkBoxUseCustomAssetKey.Name = "checkBoxUseCustomAssetKey";
+            this.checkBoxUseCustomAssetKey.Size = new System.Drawing.Size(254, 21);
+            this.checkBoxUseCustomAssetKey.TabIndex = 10;
+            this.checkBoxUseCustomAssetKey.Text = "Use custom asset (dynamic covers)";
+            this.checkBoxUseCustomAssetKey.UseVisualStyleBackColor = true;
+            this.checkBoxUseCustomAssetKey.CheckedChanged += new System.EventHandler(this.checkBoxUseCustomAssetKey_CheckedChanged);
+            // 
+            // textBoxLargeImageDetail
+            // 
+            this.textBoxLargeImageDetail.Location = new System.Drawing.Point(6, 21);
+            this.textBoxLargeImageDetail.Name = "textBoxLargeImageDetail";
+            this.textBoxLargeImageDetail.Size = new System.Drawing.Size(253, 22);
+            this.textBoxLargeImageDetail.TabIndex = 9;
+            this.textBoxLargeImageDetail.TextChanged += new System.EventHandler(this.textBoxLargeImageDetail_TextChanged);
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(this.textBoxTopLine);
+            groupBox1.Controls.Add(this.checkBoxTrackNoCount);
+            groupBox1.Controls.Add(this.textBoxBottomLine);
+            groupBox1.Controls.Add(this.checkBoxTimeShowRemaining);
+            groupBox1.Controls.Add(this.checkBoxTimeShow);
+            groupBox1.Location = new System.Drawing.Point(286, 12);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new System.Drawing.Size(267, 158);
+            groupBox1.TabIndex = 9;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Rich presence info";
+            groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // textBoxTopLine
+            // 
+            this.textBoxTopLine.Location = new System.Drawing.Point(6, 21);
+            this.textBoxTopLine.Name = "textBoxTopLine";
+            this.textBoxTopLine.Size = new System.Drawing.Size(253, 22);
+            this.textBoxTopLine.TabIndex = 6;
+            this.textBoxTopLine.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // checkBoxTrackNoCount
+            // 
+            this.checkBoxTrackNoCount.AccessibleDescription = "Show track number and track count in rich presence";
+            this.checkBoxTrackNoCount.AccessibleName = "Show track number and track count";
+            this.checkBoxTrackNoCount.AutoSize = true;
+            this.checkBoxTrackNoCount.Location = new System.Drawing.Point(6, 131);
+            this.checkBoxTrackNoCount.Name = "checkBoxTrackNoCount";
+            this.checkBoxTrackNoCount.Size = new System.Drawing.Size(253, 21);
+            this.checkBoxTrackNoCount.TabIndex = 8;
+            this.checkBoxTrackNoCount.Text = "Show track number and track count";
+            this.checkBoxTrackNoCount.UseVisualStyleBackColor = true;
+            // 
+            // textBoxBottomLine
+            // 
+            this.textBoxBottomLine.Location = new System.Drawing.Point(6, 49);
+            this.textBoxBottomLine.Name = "textBoxBottomLine";
+            this.textBoxBottomLine.Size = new System.Drawing.Size(253, 22);
+            this.textBoxBottomLine.TabIndex = 5;
+            // 
+            // checkBoxTimeShowRemaining
+            // 
+            this.checkBoxTimeShowRemaining.AccessibleDescription = "Shows remaining time rather than elapsed time";
+            this.checkBoxTimeShowRemaining.AccessibleName = "Show remaining time";
+            this.checkBoxTimeShowRemaining.AutoSize = true;
+            this.checkBoxTimeShowRemaining.Location = new System.Drawing.Point(6, 104);
+            this.checkBoxTimeShowRemaining.Name = "checkBoxTimeShowRemaining";
+            this.checkBoxTimeShowRemaining.Size = new System.Drawing.Size(160, 21);
+            this.checkBoxTimeShowRemaining.TabIndex = 7;
+            this.checkBoxTimeShowRemaining.Text = "Show remaining time";
+            this.checkBoxTimeShowRemaining.UseVisualStyleBackColor = true;
+            this.checkBoxTimeShowRemaining.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
+            // checkBoxTimeShow
+            // 
+            this.checkBoxTimeShow.AccessibleDescription = "Enables time in rich presence";
+            this.checkBoxTimeShow.AccessibleName = "Display time playing";
+            this.checkBoxTimeShow.AutoSize = true;
+            this.checkBoxTimeShow.Location = new System.Drawing.Point(6, 77);
+            this.checkBoxTimeShow.Name = "checkBoxTimeShow";
+            this.checkBoxTimeShow.Size = new System.Drawing.Size(155, 21);
+            this.checkBoxTimeShow.TabIndex = 3;
+            this.checkBoxTimeShow.Text = "Display time playing";
+            this.checkBoxTimeShow.UseVisualStyleBackColor = true;
+            this.checkBoxTimeShow.CheckedChanged += new System.EventHandler(this.checkBoxTimeShow_CheckedChanged);
+            // 
+            // saveButton
+            // 
+            this.saveButton.Location = new System.Drawing.Point(158, 141);
+            this.saveButton.Name = "saveButton";
+            this.saveButton.Size = new System.Drawing.Size(114, 23);
+            this.saveButton.TabIndex = 0;
+            this.saveButton.Text = "Save";
+            this.saveButton.UseVisualStyleBackColor = true;
+            this.saveButton.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // cancelButton
+            // 
+            this.cancelButton.Location = new System.Drawing.Point(18, 141);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(114, 23);
+            this.cancelButton.TabIndex = 1;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.button2_Click);
             // 
             // SettingsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(471, 168);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(566, 176);
+            this.Controls.Add(groupBox1);
+            this.Controls.Add(groupBox2);
+            this.Controls.Add(this.cancelButton);
+            this.Controls.Add(this.saveButton);
             this.Name = "SettingsWindow";
             this.Text = "SettingsWindow";
             this.Load += new System.EventHandler(this.SettingsWindow_Load);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button saveButton;
+        private System.Windows.Forms.Button cancelButton;
+        private System.Windows.Forms.CheckBox checkBoxTimeShow;
+        private System.Windows.Forms.TextBox textBoxBottomLine;
+        private System.Windows.Forms.TextBox textBoxTopLine;
+        private System.Windows.Forms.CheckBox checkBoxTimeShowRemaining;
+        private System.Windows.Forms.CheckBox checkBoxTrackNoCount;
+        private System.Windows.Forms.TextBox textBoxLargeImageDetail;
+        private System.Windows.Forms.TextBox textBoxAssetKey;
+        private System.Windows.Forms.CheckBox checkBoxUseCustomAssetKey;
     }
 }
