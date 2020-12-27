@@ -41,7 +41,7 @@ namespace MusicBeePlugin
             about.ConfigurationPanelHeight = 0;
             
             // Discord RPC
-            discordRpcClient = new DiscordRpcClient("771555853513129984");
+            discordRpcClient = new DiscordRpcClient("792839742709432411");
             presence = new RichPresence() {
                 Assets = new Assets() {
                     LargeImageKey = "default",
@@ -150,7 +150,7 @@ namespace MusicBeePlugin
         }
 
         // Replaces tags in string with metadata
-        private string ReplaceTags(string taggedString)
+        private string ReplaceTags(string taggedString, bool padding = true)
         {
             var stringBuffer = new StringBuilder();
             var tagBuffer = new StringBuilder();
@@ -180,7 +180,8 @@ namespace MusicBeePlugin
                     else stringBuffer.Append(taggedString[i]);
                 }
             }
-            if (tagBuffer.Length > 0) stringBuffer.Append(tagBuffer); // whatever is left in tagBuffer needs to go back
+            stringBuffer.Append(tagBuffer); // whatever is left in tagBuffer needs to go back
+            if (padding && stringBuffer.Length < 2) stringBuffer.Insert(0, "\u180E").Append("\u180E");
             return stringBuffer.ToString();
         }
 
