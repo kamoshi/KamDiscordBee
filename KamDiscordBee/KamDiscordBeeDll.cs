@@ -14,6 +14,7 @@ namespace MusicBeePlugin
         private PluginInfo about = new PluginInfo();
 
         // Discord RPC
+        private readonly static string defaultAppId = "792839742709432411";
         private DiscordRpcClient discordRpcClient;
         private Dictionary<string, Func<string>> metaDataDelegates;
         private RichPresence presence;
@@ -39,9 +40,13 @@ namespace MusicBeePlugin
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents;
             about.ConfigurationPanelHeight = 0;
-            
+
+            // Settings
+            settingsPath = mbApiInterface.Setting_GetPersistentStoragePath() + about.Name + "\\settings.xml";
+            settings = Settings.Load(settingsPath);
+
             // Discord RPC
-            discordRpcClient = new DiscordRpcClient("792839742709432411");
+            discordRpcClient = new DiscordRpcClient(settings.ImageUseAssetKey ? settings.ApplicationId : defaultAppId);
             presence = new RichPresence() {
                 Assets = new Assets() {
                     LargeImageKey = "musicbee",
@@ -51,10 +56,6 @@ namespace MusicBeePlugin
             };
             discordRpcClient.Initialize();
             metaDataDelegates = GetMetaDataDelegates();
-
-            // Settings
-            settingsPath = mbApiInterface.Setting_GetPersistentStoragePath() + about.Name + "\\settings.xml";
-            settings = Settings.Load(settingsPath);
 
             return about;
         }

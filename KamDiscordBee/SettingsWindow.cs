@@ -23,11 +23,14 @@ namespace MusicBeePlugin
 
         private void UpdateFormData(Settings settings)
         {
+            textBoxAppId.Text = settings.ApplicationId;
+
             // Image stuff
             textBoxLargeImageDetail.Text = settings.ImageDetail;
             checkBoxUseCustomAssetKey.Checked = settings.ImageUseAssetKey;
             textBoxAssetKey.Text = settings.ImageAssetKey;
 
+            textBoxAppId.Enabled = checkBoxUseCustomAssetKey.Checked;
             textBoxAssetKey.Enabled = checkBoxUseCustomAssetKey.Checked;
 
             // Info stuff
@@ -47,6 +50,7 @@ namespace MusicBeePlugin
 
         private void button1_Click(object sender, EventArgs e)
         {
+            settings.ApplicationId = textBoxAppId.Text;
             // image
             settings.ImageDetail = textBoxLargeImageDetail.Text;
             settings.ImageUseAssetKey = checkBoxUseCustomAssetKey.Checked;
@@ -96,11 +100,27 @@ namespace MusicBeePlugin
         private void checkBoxUseCustomAssetKey_CheckedChanged(object sender, EventArgs e)
         {
             textBoxAssetKey.Enabled = checkBoxUseCustomAssetKey.Checked;
+            textBoxAppId.Enabled = checkBoxUseCustomAssetKey.Checked;
         }
 
         private void checkBoxTimeShow_CheckedChanged(object sender, EventArgs e)
         {
             checkBoxTimeShowRemaining.Enabled = checkBoxTimeShow.Checked;
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonDefaults_Click(object sender, EventArgs e)
+        {
+            UpdateFormData(new Settings());
+        }
+
+        private void textBoxAppId_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -11,6 +11,14 @@ namespace MusicBeePlugin
     [DataContract]
     class Settings
     {
+        // App Id
+        [DataMember] private string _applicationId;
+        public string ApplicationId
+        {
+            get => _applicationId ?? "792839742709432411";
+            set => _applicationId = value;
+        }
+
         // IMAGE STUFF
         [DataMember] private string _imageDetail;
         public string ImageDetail

@@ -32,6 +32,7 @@ namespace MusicBeePlugin
             System.Windows.Forms.GroupBox groupBox2;
             System.Windows.Forms.Label label1;
             System.Windows.Forms.GroupBox groupBox1;
+            System.Windows.Forms.Label label2;
             this.textBoxAssetKey = new System.Windows.Forms.TextBox();
             this.checkBoxUseCustomAssetKey = new System.Windows.Forms.CheckBox();
             this.textBoxLargeImageDetail = new System.Windows.Forms.TextBox();
@@ -42,22 +43,27 @@ namespace MusicBeePlugin
             this.checkBoxTimeShow = new System.Windows.Forms.CheckBox();
             this.saveButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
+            this.buttonDefaults = new System.Windows.Forms.Button();
+            this.textBoxAppId = new System.Windows.Forms.TextBox();
             groupBox2 = new System.Windows.Forms.GroupBox();
             label1 = new System.Windows.Forms.Label();
             groupBox1 = new System.Windows.Forms.GroupBox();
+            label2 = new System.Windows.Forms.Label();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
             // 
+            groupBox2.Controls.Add(label2);
+            groupBox2.Controls.Add(this.textBoxAppId);
             groupBox2.Controls.Add(label1);
             groupBox2.Controls.Add(this.textBoxAssetKey);
             groupBox2.Controls.Add(this.checkBoxUseCustomAssetKey);
             groupBox2.Controls.Add(this.textBoxLargeImageDetail);
             groupBox2.Location = new System.Drawing.Point(12, 12);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(268, 107);
+            groupBox2.Size = new System.Drawing.Size(268, 129);
             groupBox2.TabIndex = 5;
             groupBox2.TabStop = false;
             groupBox2.Text = "Large Image";
@@ -65,7 +71,7 @@ namespace MusicBeePlugin
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new System.Drawing.Point(29, 75);
+            label1.Location = new System.Drawing.Point(21, 101);
             label1.Name = "label1";
             label1.Size = new System.Drawing.Size(73, 17);
             label1.TabIndex = 10;
@@ -73,7 +79,7 @@ namespace MusicBeePlugin
             // 
             // textBoxAssetKey
             // 
-            this.textBoxAssetKey.Location = new System.Drawing.Point(108, 75);
+            this.textBoxAssetKey.Location = new System.Drawing.Point(129, 98);
             this.textBoxAssetKey.Name = "textBoxAssetKey";
             this.textBoxAssetKey.Size = new System.Drawing.Size(117, 22);
             this.textBoxAssetKey.TabIndex = 11;
@@ -167,9 +173,9 @@ namespace MusicBeePlugin
             // 
             // saveButton
             // 
-            this.saveButton.Location = new System.Drawing.Point(158, 141);
+            this.saveButton.Location = new System.Drawing.Point(198, 147);
             this.saveButton.Name = "saveButton";
-            this.saveButton.Size = new System.Drawing.Size(114, 23);
+            this.saveButton.Size = new System.Drawing.Size(73, 23);
             this.saveButton.TabIndex = 0;
             this.saveButton.Text = "Save";
             this.saveButton.UseVisualStyleBackColor = true;
@@ -177,19 +183,48 @@ namespace MusicBeePlugin
             // 
             // cancelButton
             // 
-            this.cancelButton.Location = new System.Drawing.Point(18, 141);
+            this.cancelButton.Location = new System.Drawing.Point(110, 147);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(114, 23);
+            this.cancelButton.Size = new System.Drawing.Size(71, 23);
             this.cancelButton.TabIndex = 1;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
             this.cancelButton.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // buttonDefaults
+            // 
+            this.buttonDefaults.Location = new System.Drawing.Point(18, 147);
+            this.buttonDefaults.Name = "buttonDefaults";
+            this.buttonDefaults.Size = new System.Drawing.Size(75, 23);
+            this.buttonDefaults.TabIndex = 10;
+            this.buttonDefaults.Text = "Default";
+            this.buttonDefaults.UseVisualStyleBackColor = true;
+            this.buttonDefaults.Click += new System.EventHandler(this.buttonDefaults_Click);
+            // 
+            // textBoxAppId
+            // 
+            this.textBoxAppId.Location = new System.Drawing.Point(129, 72);
+            this.textBoxAppId.Name = "textBoxAppId";
+            this.textBoxAppId.Size = new System.Drawing.Size(117, 22);
+            this.textBoxAppId.TabIndex = 12;
+            this.textBoxAppId.TextChanged += new System.EventHandler(this.textBoxAppId_TextChanged);
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new System.Drawing.Point(21, 75);
+            label2.Name = "label2";
+            label2.Size = new System.Drawing.Size(98, 17);
+            label2.TabIndex = 13;
+            label2.Text = "Application ID:";
+            label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // SettingsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(566, 176);
+            this.Controls.Add(this.buttonDefaults);
             this.Controls.Add(groupBox1);
             this.Controls.Add(groupBox2);
             this.Controls.Add(this.cancelButton);
@@ -217,5 +252,7 @@ namespace MusicBeePlugin
         private System.Windows.Forms.TextBox textBoxLargeImageDetail;
         private System.Windows.Forms.TextBox textBoxAssetKey;
         private System.Windows.Forms.CheckBox checkBoxUseCustomAssetKey;
+        private System.Windows.Forms.TextBox textBoxAppId;
+        private System.Windows.Forms.Button buttonDefaults;
     }
 }
