@@ -109,6 +109,8 @@ namespace MusicBeePlugin
                     string topLine = ReplaceTags(settings.TopLine);
                     string bottomLine = ReplaceTags(settings.BottomLine);
                     UpdatePresenceInfoState(imageTag, topLine, bottomLine, imageDescription);
+                    UpdatePresenceTrackNumber(true);
+                    discordRpcClient.SetPresence(presence);
                     break;
             }
         }
@@ -122,7 +124,6 @@ namespace MusicBeePlugin
             presence.State = bottomLine;
             presence.Assets.LargeImageKey = albumCover.ToLowerInvariant();
             presence.Assets.LargeImageText = description;
-            discordRpcClient.SetPresence(presence);
         }
 
         // Updates player state and time in rich presence
@@ -147,6 +148,33 @@ namespace MusicBeePlugin
                 }
             }
             else presence.Timestamps = null;
+        }
+
+        // Updates player song Track and count
+        private void UpdatePresenceTrackNumber(bool displayTrackNumber)
+        {
+            if (displayTrackNumber)
+            {
+                int trackNo = 0;
+                int trackCount = 0;
+                try
+                {
+                    trackNo = int.Parse(metaDataDelegates["TrackNo"]());
+                    trackCount = int.Parse(metaDataDelegates["TrackCount"]());
+                }
+                catch (Exception) { } // Swallow exception
+                if (trackNo > 0 && trackCount >= trackNo)
+                {
+                    presence.Party = new Party()
+                    {
+                        ID = Secrets.CreateSecret(new Random()),
+                        Size = trackNo,
+                        Max = trackCount
+                    };
+                }
+                else presence.Party = null;
+            }
+            else presence.Party = null;
         }
 
         // Replaces tags in string with metadata
