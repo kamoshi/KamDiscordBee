@@ -38,7 +38,7 @@ namespace MusicBeePlugin
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = ReceiveNotificationFlags.PlayerEvents;
-            about.ConfigurationPanelHeight = 0;   // height in pixels that musicbee should reserve in a panel for config settings. When set, a handle to an empty panel will be passed to the Configure function
+            about.ConfigurationPanelHeight = 0;
             
             // Discord RPC
             discordRpcClient = new DiscordRpcClient("771555853513129984");
@@ -55,39 +55,21 @@ namespace MusicBeePlugin
             // Settings
             settingsPath = mbApiInterface.Setting_GetPersistentStoragePath() + about.Name + "\\settings.xml";
             settings = Settings.Load(settingsPath);
-            //settings.TopLine = "[Album][Album]";
-            //settings.Save(settingsPath);
 
             return about;
         }
 
         public bool Configure(IntPtr panelHandle)
         {
-            // save any persistent settings in a sub-folder of this path
-            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
-            // panelHandle will only be set if you set about.ConfigurationPanelHeight to a non-zero value
-            // keep in mind the panel width is scaled according to the font the user has selected
-            // if about.ConfigurationPanelHeight is set to 0, you can display your own popup window
-            if (panelHandle != IntPtr.Zero)
-            {
-                Panel configPanel = (Panel)Panel.FromHandle(panelHandle);
-                Label prompt = new Label();
-                prompt.AutoSize = true;
-                prompt.Location = new Point(0, 0);
-                prompt.Text = "prompt:";
-                TextBox textBox = new TextBox();
-                textBox.Bounds = new Rectangle(60, 0, 100, textBox.Height);
-                configPanel.Controls.AddRange(new Control[] { prompt, textBox });
-            }
-            return false;
+            SettingsWindow sw = new SettingsWindow();
+            sw.Show();
+            return true;
         }
        
         // called by MusicBee when the user clicks Apply or Save in the MusicBee Preferences screen.
-        // its up to you to figure out whether anything has changed and needs updating
         public void SaveSettings()
         {
-            // TODO: save any persistent settings in a sub-folder of this path
-            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
+            settings.Save(settingsPath);
         }
 
         // MusicBee is closing the plugin (plugin is being disabled by user or MusicBee is shutting down)
@@ -100,7 +82,7 @@ namespace MusicBeePlugin
         // uninstall this plugin - clean up any persisted files
         public void Uninstall()
         {
-            // TODO: Delete settings file here
+            Settings.Clear(settingsPath);
         }
 
         public void ReceiveNotification(string sourceFileUrl, NotificationType type)

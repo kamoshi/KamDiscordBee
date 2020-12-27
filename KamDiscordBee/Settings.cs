@@ -53,5 +53,10 @@ namespace MusicBeePlugin
             }
             else return new Settings();
         }
+
+        internal static void Clear(string path)
+        {
+            if (File.Exists(path)) File.Delete(path);
+        }
     }
 }
