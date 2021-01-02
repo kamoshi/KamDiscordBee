@@ -223,6 +223,11 @@ namespace MusicBeePlugin
                 string enumName = Enum.GetName(typeof(MetaDataType), enumVal);
                 dictionary[enumName] = () => mbApiInterface.NowPlaying_GetFileTag(enumVal);
             }
+            foreach (FilePropertyType enumVal in Enum.GetValues(typeof(FilePropertyType)))
+            {
+                string enumName = Enum.GetName(typeof(FilePropertyType), enumVal);
+                dictionary[enumName] = () => mbApiInterface.NowPlaying_GetFileProperty(enumVal);
+            }
             return dictionary;
         }
         
