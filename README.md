@@ -1,4 +1,4 @@
-# KamDiscordBee v1.0.0
+# KamDiscordBee
 A plugin enabling Discord rich presence for MusicBee
 
 Supports custom Applications (album covers in rich presence!)
