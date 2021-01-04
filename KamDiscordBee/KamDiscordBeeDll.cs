@@ -105,7 +105,7 @@ namespace MusicBeePlugin
                             UpdatePresencePlayState("stopped", false, false);
                             break;
                     }
-                    string imageTag = settings.ImageUseAssetKey ? ReplaceTags(settings.ImageAssetKey) : "musicbee";
+                    string imageTag = settings.ImageUseAssetKey ? ReplaceTags(settings.ImageAssetKey, padding: false) : "musicbee";
                     string imageDescription = ReplaceTags(settings.ImageDetail);
                     string topLine = ReplaceTags(settings.TopLine);
                     string bottomLine = ReplaceTags(settings.BottomLine);
